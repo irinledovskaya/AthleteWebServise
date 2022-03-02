@@ -113,6 +113,18 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 		_, err = db.Query(stmt, a.Id, a.Birth, a.Country, a.Name, a.Surname, a.Weight)
 		if err != nil {
 			fmt.Println(err)
+			return
+		}
+
+		t, err := template.ParseFiles("main/templates/addsuccess.html")
+		if err != nil {
+			fmt.Println("parsing addsuccess template: ", err)
+			return
+		}
+		err = t.Execute(w, nil)
+		if err != nil {
+			fmt.Println("executing addsuccess template: ", err)
+			return
 		}
 	}
 }
