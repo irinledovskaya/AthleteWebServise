@@ -101,5 +101,18 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 
 		db := dbconn()
 		defer db.Close()
+
+		row := db.QueryRow("SELECT max(id) FROM athlete")
+		var maxid int
+		err = row.Scan(&maxid)
+		if err != nil {
+			fmt.Println("retrieving max id : ", err)
+		}
+		a.Id = maxid + 1
+		stmt := "INSERT INTO athlete (id, birth, country, name, surname, weight) VALUES($1, $2, $3, $4, $5, $6)"
+		_, err = db.Query(stmt, a.Id, a.Birth, a.Country, a.Name, a.Surname, a.Weight)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
