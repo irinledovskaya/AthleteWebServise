@@ -39,7 +39,7 @@ func getAllAthletes(w http.ResponseWriter, r *http.Request) {
 	var b []Athlete
 	for rows.Next() {
 		a := Athlete{}
-		err := rows.Scan(&a.Id, &a.Birth, &a.Country, &a.Name, &a.Surname, &a.Weight)
+		err := rows.Scan(&a.Id, &a.Birth, &a.SportClub, &a.Name, &a.Surname, &a.Weight)
 		if err != nil {
 			fmt.Println("retrieving athlete: ", err)
 		}
@@ -62,7 +62,7 @@ func getAthleteByID(w http.ResponseWriter, r *http.Request) {
 
 	row := db.QueryRow("SELECT * FROM athlete WHERE id = $1", id)
 	a := Athlete{}
-	err = row.Scan(&a.Id, &a.Birth, &a.Country, &a.Name, &a.Surname, &a.Weight)
+	err = row.Scan(&a.Id, &a.Birth, &a.SportClub, &a.Name, &a.Surname, &a.Weight)
 	if err != nil {
 		fmt.Println("retrieving athlete: ", err)
 	}
@@ -88,7 +88,7 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		a := Athlete{}
-		a.Name, a.Surname, a.Country = strings.Join(r.Form["name"], ""),
+		a.Name, a.Surname, a.SportClub = strings.Join(r.Form["name"], ""),
 			strings.Join(r.Form["surname"], ""), strings.Join(r.Form["country"], "")
 		a.Birth, err = time.Parse("2006-01-02", strings.Join(r.Form["birth"], ""))
 		if err != nil {
@@ -110,7 +110,7 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 		}
 		a.Id = maxid + 1
 		stmt := "INSERT INTO athlete (id, birth, country, name, surname, weight) VALUES($1, $2, $3, $4, $5, $6)"
-		_, err = db.Query(stmt, a.Id, a.Birth, a.Country, a.Name, a.Surname, a.Weight)
+		_, err = db.Query(stmt, a.Id, a.Birth, a.SportClub, a.Name, a.Surname, a.Weight)
 		if err != nil {
 			fmt.Println(err)
 			return
