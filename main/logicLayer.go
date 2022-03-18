@@ -12,12 +12,8 @@ import (
 )
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("main/templates/mainpage.html")
-	if err != nil {
-		fmt.Println("parsing main template: ", err)
-		return
-	}
-	err = t.Execute(w, nil)
+	t := template.Must(template.ParseFiles("main/templates/mainpage.html"))
+	err := t.Execute(w, nil)
 	if err != nil {
 		fmt.Println("executing main template: ", err)
 		return

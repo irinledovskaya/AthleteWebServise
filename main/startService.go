@@ -13,6 +13,6 @@ func main() {
 	r.HandleFunc("/athlete", getAllAthletes).Methods("GET")
 	r.HandleFunc("/athlete/{id}", getAthleteByID).Methods("GET")
 	r.HandleFunc("/add", newAthlete).Methods("GET", "POST")
-
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./main/templates/")))
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
