@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -45,24 +44,61 @@ func getAllAthletes(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(b)
 }
 
-func getAthleteByID(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
-	if err != nil {
-		fmt.Println("param is not int: ", err)
-	}
+func surnameFinding(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		t, err := template.ParseFiles("main/templates/getsurname.html")
+		if err != nil {
+			fmt.Println("parsing getsurname template: ", err)
+			return
+		}
+		err = t.Execute(w, nil)
+		if err != nil {
+			fmt.Println("executing getsurname template: ", err)
+			return
+		}
+	} else {
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Println("parsing getsurname form: ", err)
+			return
+		}
+		surname := strings.Join(r.Form["surname"], "")
+		if surname == "" {
+			t, err := template.ParseFiles("main/templates/getfail.html")
+			if err != nil {
+				fmt.Println("parsing getfail template: ", err)
+				return
+			}
+			err = t.Execute(w, nil)
+			if err != nil {
+				fmt.Println("executing getfail template: ", err)
+				return
+			}
+			return
+		}
 
-	db := dbconn()
-	defer db.Close()
+		db := dbconn()
+		defer db.Close()
 
-	row := db.QueryRow("SELECT * FROM athlete WHERE id = $1", id)
-	a := Athlete{}
-	err = row.Scan(&a.Id, &a.Birth, &a.SportClub, &a.Name, &a.Surname, &a.Weight)
-	if err != nil {
-		fmt.Println("retrieving athlete: ", err)
+		row := db.QueryRow("SELECT * FROM athlete WHERE surname = $1", surname)
+		a := Athlete{}
+		err = row.Scan(&a.Id, &a.Birth, &a.SportClub, &a.Name, &a.Surname, &a.Weight)
+		if err != nil {
+			fmt.Println("retrieving athlete: ", err)
+			t, err := template.ParseFiles("main/templates/getfail.html")
+			if err != nil {
+				fmt.Println("parsing getfail template: ", err)
+				return
+			}
+			err = t.Execute(w, nil)
+			if err != nil {
+				fmt.Println("executing getfail template: ", err)
+				return
+			}
+			return
+		}
+		json.NewEncoder(w).Encode(a)
 	}
-	json.NewEncoder(w).Encode(a)
 }
 
 func newAthlete(w http.ResponseWriter, r *http.Request) {
