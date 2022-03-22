@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Таблица</title>
+    </head>
+    <body>
+        <ul>
+            {{range .Table}}
+            <li>{{.Name}} {{.Surname}} {{.Weight}} {{.SportClub}} {{.Birth}} {{.Id}}</li>
+            {{end}}
+        </ul>
+    </body>
+</html>

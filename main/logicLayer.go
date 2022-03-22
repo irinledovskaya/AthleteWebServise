@@ -19,6 +19,33 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func table(w http.ResponseWriter, r *http.Request) {
+	db := dbconn()
+	defer db.Close()
+
+	row := db.QueryRow("SELECT * FROM athlete WHERE surname = $1", "Petrov")
+	a := Athlete{}
+	err := row.Scan(&a.Id, &a.Birth, &a.SportClub, &a.Name, &a.Surname, &a.Weight)
+
+	row = db.QueryRow("SELECT * FROM athlete WHERE surname = $1", "Juraev")
+	b := Athlete{}
+	err = row.Scan(&b.Id, &b.Birth, &b.SportClub, &b.Name, &b.Surname, &b.Weight)
+
+	type AthleteTable struct {
+		Table []Athlete
+	}
+	tab := AthleteTable{}
+	tab.Table = append(tab.Table, a, b)
+
+	fmt.Println(a.toString())
+	t := template.Must(template.ParseFiles("main/templates/athletetable.html"))
+	err = t.Execute(w, tab)
+	if err != nil {
+		fmt.Println("executing athletetable template: ", err)
+		return
+	}
+}
+
 func getAllAthletes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
