@@ -3,12 +3,29 @@
     <head>
         <meta charset="UTF-8">
         <title>Таблица</title>
+        <link rel="stylesheet" type="text/css" href="mainstyles.css">
     </head>
     <body>
-        <ul>
+        <table>
+            <caption>Список атлетов</caption>
+            <tr>
+                <th>№</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Дата рождения</th>
+                <th>Вес</th>
+                <th>Клуб</th>
+            </tr>
             {{range .Table}}
-            <li>{{.Name}} {{.Surname}} {{.Weight}} {{.SportClub}} {{.Birth}} {{.Id}}</li>
+            <tr>
+                <td>{{.Id}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.Surname}}</td>
+                <td>{{.Birth}}</td>
+                <td>{{.Weight}}</td>
+                <td>{{.SportClub}}</td>
+            </tr>
             {{end}}
-        </ul>
+        </table>
     </body>
 </html>
