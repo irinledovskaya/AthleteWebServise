@@ -1,0 +1,31 @@
+div {
+    background-color: #f3f3f3;
+    margin: auto;
+    width: 80%;
+    padding: 60px 0px;
+    border-radius: 20px;
+    text-align: center;
+    font-family: "Arial", sans-serif;
+}
+table {
+    font-family: arial, sans-serif;
+    border: 1px solid #2d2d2d;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    background-color: #ffffff;
+}
+
+th {
+    border: 1px solid #2d2d2d;
+    padding: 8px;
+    background-color: #6f859c;
+    color: #fff;
+}
+
+td {
+    border: 1px solid #2d2d2d;
+    text-align: left;
+    padding: 8px;
+}

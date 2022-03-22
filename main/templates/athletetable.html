@@ -3,11 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <title>Таблица</title>
-        <link rel="stylesheet" type="text/css" href="mainstyles.css">
+        <link rel="stylesheet" type="text/css" href="tablestyles.css">
     </head>
     <body>
+        <div>
         <table>
-            <caption>Список атлетов</caption>
+            <caption><h1>{{.Caption}}</h1></caption>
             <tr>
                 <th>№</th>
                 <th>Имя</th>
@@ -27,5 +28,6 @@
             </tr>
             {{end}}
         </table>
+        </div>
     </body>
 </html>

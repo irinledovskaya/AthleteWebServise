@@ -20,5 +20,6 @@ func (a *Athlete) toString() string {
 }
 
 type AthleteTable struct {
-	Table []Athlete
+	Caption string
+	Table   []Athlete
 }

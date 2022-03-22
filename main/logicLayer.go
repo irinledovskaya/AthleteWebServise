@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -30,6 +29,7 @@ func getAllAthletes(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tab := AthleteTable{}
+	tab.Caption = "Список атлетов"
 	for rows.Next() {
 		a := Athlete{}
 		err := rows.Scan(&a.Id, &a.Birth, &a.SportClub, &a.Name, &a.Surname, &a.Weight)
@@ -100,7 +100,15 @@ func surnameFinding(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
-		json.NewEncoder(w).Encode(a)
+		tab := AthleteTable{}
+		tab.Caption = "Найдет атлет:"
+		tab.Table = append(tab.Table, a)
+		t := template.Must(template.ParseFiles("main/templates/athletetable.html"))
+		err = t.Execute(w, tab)
+		if err != nil {
+			fmt.Println("executing athletetable template: ", err)
+			return
+		}
 	}
 }
 
@@ -124,7 +132,7 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 		}
 		a := Athlete{}
 		a.Name, a.Surname, a.SportClub = strings.Join(r.Form["name"], ""),
-			strings.Join(r.Form["surname"], ""), strings.Join(r.Form["country"], "")
+			strings.Join(r.Form["surname"], ""), strings.Join(r.Form["sportclub"], "")
 		a.Birth, err = time.Parse("2006-01-02", strings.Join(r.Form["birth"], ""))
 		if err != nil {
 			fmt.Println("birth ", err)
@@ -144,7 +152,7 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("retrieving max id : ", err)
 		}
 		a.Id = maxid + 1
-		stmt := "INSERT INTO athlete (id, birth, country, name, surname, weight) VALUES($1, $2, $3, $4, $5, $6)"
+		stmt := "INSERT INTO athlete (id, birth, sportclub, name, surname, weight) VALUES($1, $2, $3, $4, $5, $6)"
 		_, err = db.Query(stmt, a.Id, a.Birth, a.SportClub, a.Name, a.Surname, a.Weight)
 		if err != nil {
 			fmt.Println(err)
