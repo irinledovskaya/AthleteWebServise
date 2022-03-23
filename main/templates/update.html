@@ -2,28 +2,31 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Обновить</title>
+    <link rel="stylesheet" href="mainstyles.css">
 </head>
 <body>
     <div>
         <div>
             <form method="post">
+                {{range .Table}}
                 Имя <br>
-                <input type="text" name="name">
+                <input type="text" name="name" value="{{.Name}}">
                 <br>
                 Фамилия <br>
-                <input type="text" name="surname">
+                <input type="text" name="surname" value="{{.Surname}}">
                 <br>
                 Дата рождения <br>
-                <input type="date" name="birth">
+                <input type="text" name="birth" value="{{.Birth}}">
                 <br>
                 Собственный вес <br>
-                <input type="number" name="weight" min="0" max="250" step="0.01">
+                <input type="number" name="weight" min="0" max="250" step="0.01" value="{{.Weight}}">
                 <br>
                 Спортивный клуб <br>
-                <input type="text" name="sportclub">
+                <input type="text" name="sportclub" value="{{.SportClub}}">
+                {{end}}
                 <br><br>
-                <input type="submit" value="Добавить">
+                <input type="submit" value="Обновить">
             </form>
         </div>
     </div>

@@ -174,9 +174,64 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 
 func updateAthlete(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
+		t, err := template.ParseFiles("main/templates/updatefind.html")
+		if err != nil {
+			fmt.Println("parsing updatefind template: ", err)
+			return
+		}
+		err = t.Execute(w, nil)
+		if err != nil {
+			fmt.Println("executing updatefind template: ", err)
+			return
+		}
+	} else {
 		err := r.ParseForm()
 		if err != nil {
-			fmt.Println("parsing add form: ", err)
+			fmt.Println("parsing updatefind form: ", err)
+			return
+		}
+		surname := strings.Join(r.Form["surname"], "")
+		if surname == "" {
+			t, err := template.ParseFiles("main/templates/getfail.html")
+			if err != nil {
+				fmt.Println("parsing getfail template: ", err)
+				return
+			}
+			err = t.Execute(w, nil)
+			if err != nil {
+				fmt.Println("executing getfail template: ", err)
+				return
+			}
+			return
+		}
+
+		db := dbconn()
+		defer db.Close()
+
+		row := db.QueryRow("SELECT * FROM athlete WHERE surname = $1", surname)
+		a := Athlete{}
+		err = row.Scan(&a.Id, &a.Birth, &a.SportClub, &a.Name, &a.Surname, &a.Weight)
+		if err != nil {
+			fmt.Println("retrieving athlete: ", err)
+			t, err := template.ParseFiles("main/templates/getfail.html")
+			if err != nil {
+				fmt.Println("parsing getfail template: ", err)
+				return
+			}
+			err = t.Execute(w, nil)
+			if err != nil {
+				fmt.Println("executing getfail template: ", err)
+				return
+			}
+			return
+		}
+		tab := AthleteTable{}
+		tab.Table = append(tab.Table, a)
+		fmt.Println(a.Birth.Format("02.01.2006"))
+		t := template.Must(template.ParseFiles("main/templates/update.html"))
+		err = t.Execute(w, tab)
+		if err != nil {
+			fmt.Println("executing update template: ", err)
 			return
 		}
 	}
