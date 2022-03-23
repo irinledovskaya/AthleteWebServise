@@ -12,6 +12,7 @@ type Athlete struct {
 	Name      string
 	Surname   string
 	Weight    float64
+	Attempt   Attempts
 }
 
 func (a *Athlete) toString() string {
@@ -22,4 +23,8 @@ func (a *Athlete) toString() string {
 type AthleteTable struct {
 	Caption string
 	Table   []Athlete
+}
+
+type Attempts struct {
+	sn1, sn2, sn3, cj1, cj2, cj3 int
 }

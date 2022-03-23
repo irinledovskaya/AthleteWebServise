@@ -101,7 +101,7 @@ func surnameFinding(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		tab := AthleteTable{}
-		tab.Caption = "Найдет атлет:"
+		tab.Caption = "Найден атлет:"
 		tab.Table = append(tab.Table, a)
 		t := template.Must(template.ParseFiles("main/templates/athletetable.html"))
 		err = t.Execute(w, tab)
@@ -167,6 +167,16 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 		err = t.Execute(w, nil)
 		if err != nil {
 			fmt.Println("executing addsuccess template: ", err)
+			return
+		}
+	}
+}
+
+func updateAthlete(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Println("parsing add form: ", err)
 			return
 		}
 	}
