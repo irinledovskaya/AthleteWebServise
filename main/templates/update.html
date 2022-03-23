@@ -16,15 +16,15 @@
                 Фамилия <br>
                 <input type="text" name="surname" value="{{.Surname}}">
                 <br>
-                Дата рождения <br>
-                <input type="text" name="birth" value="{{.Birth}}">
-                <br>
                 Собственный вес <br>
                 <input type="number" name="weight" min="0" max="250" step="0.01" value="{{.Weight}}">
                 <br>
                 Спортивный клуб <br>
                 <input type="text" name="sportclub" value="{{.SportClub}}">
                 {{end}}
+                <br>
+                Дата рождения <br>
+                <input type="date" name="birth" value="{{.Caption}}">
                 <br><br>
                 <input type="submit" value="Обновить">
             </form>

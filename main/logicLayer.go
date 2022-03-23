@@ -226,8 +226,8 @@ func updateAthlete(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		tab := AthleteTable{}
+		tab.Caption = a.Birth.Format("2006-01-02")
 		tab.Table = append(tab.Table, a)
-		fmt.Println(a.Birth.Format("02.01.2006"))
 		t := template.Must(template.ParseFiles("main/templates/update.html"))
 		err = t.Execute(w, tab)
 		if err != nil {
