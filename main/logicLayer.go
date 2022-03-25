@@ -159,12 +159,14 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		t, err := template.ParseFiles("main/templates/addsuccess.html")
+		t, err := template.ParseFiles("main/templates/success.html")
 		if err != nil {
-			fmt.Println("parsing addsuccess template: ", err)
+			fmt.Println("parsing success template: ", err)
 			return
 		}
-		err = t.Execute(w, nil)
+
+		b := successButton{"http://127.0.0.1:8080/add", "Добавить ещё атлета"}
+		err = t.Execute(w, b)
 		if err != nil {
 			fmt.Println("executing addsuccess template: ", err)
 			return
