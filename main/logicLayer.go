@@ -189,52 +189,97 @@ func updateAthlete(w http.ResponseWriter, r *http.Request) {
 	} else {
 		err := r.ParseForm()
 		if err != nil {
-			fmt.Println("parsing updatefind form: ", err)
+			fmt.Println("parsing update form: ", err)
 			return
 		}
-		surname := strings.Join(r.Form["surname"], "")
-		if surname == "" {
-			t, err := template.ParseFiles("main/templates/getfail.html")
-			if err != nil {
-				fmt.Println("parsing getfail template: ", err)
+		if strings.Join(r.Form["upd"], "") == "Редактировать" {
+			surname := strings.Join(r.Form["surname"], "")
+			if surname == "" {
+				t, err := template.ParseFiles("main/templates/getfail.html")
+				if err != nil {
+					fmt.Println("parsing getfail template: ", err)
+					return
+				}
+				err = t.Execute(w, nil)
+				if err != nil {
+					fmt.Println("executing getfail template: ", err)
+					return
+				}
 				return
 			}
-			err = t.Execute(w, nil)
-			if err != nil {
-				fmt.Println("executing getfail template: ", err)
-				return
-			}
-			return
-		}
 
-		db := dbconn()
-		defer db.Close()
+			db := dbconn()
+			defer db.Close()
 
-		row := db.QueryRow("SELECT * FROM athlete WHERE surname = $1", surname)
-		a := Athlete{}
-		err = row.Scan(&a.Id, &a.Birth, &a.SportClub, &a.Name, &a.Surname, &a.Weight)
-		if err != nil {
-			fmt.Println("retrieving athlete: ", err)
-			t, err := template.ParseFiles("main/templates/getfail.html")
+			row := db.QueryRow("SELECT * FROM athlete WHERE surname = $1", surname)
+			a := Athlete{}
+			err = row.Scan(&a.Id, &a.Birth, &a.SportClub, &a.Name, &a.Surname, &a.Weight)
 			if err != nil {
-				fmt.Println("parsing getfail template: ", err)
+				fmt.Println("retrieving athlete: ", err)
+				t, err := template.ParseFiles("main/templates/getfail.html")
+				if err != nil {
+					fmt.Println("parsing getfail template: ", err)
+					return
+				}
+				err = t.Execute(w, nil)
+				if err != nil {
+					fmt.Println("executing getfail template: ", err)
+					return
+				}
 				return
 			}
-			err = t.Execute(w, nil)
+			tab := AthleteTable{}
+			tab.Caption = a.Birth.Format("2006-01-02")
+			tab.Table = append(tab.Table, a)
+			t := template.Must(template.ParseFiles("main/templates/update.html"))
+			err = t.Execute(w, tab)
 			if err != nil {
-				fmt.Println("executing getfail template: ", err)
+				fmt.Println("executing update template: ", err)
 				return
 			}
-			return
-		}
-		tab := AthleteTable{}
-		tab.Caption = a.Birth.Format("2006-01-02")
-		tab.Table = append(tab.Table, a)
-		t := template.Must(template.ParseFiles("main/templates/update.html"))
-		err = t.Execute(w, tab)
-		if err != nil {
-			fmt.Println("executing update template: ", err)
-			return
+		} else {
+			a := Athlete{}
+			a.Id, err = strconv.Atoi(strings.Join(r.Form["id"], ""))
+			fmt.Println(a.Id)
+			a.Name, a.Surname, a.SportClub = strings.Join(r.Form["name"], ""),
+				strings.Join(r.Form["surname"], ""), strings.Join(r.Form["sportclub"], "")
+			a.Birth, err = time.Parse("2006-01-02", strings.Join(r.Form["birth"], ""))
+			if err != nil {
+				fmt.Println("birth ", err)
+			}
+			a.Weight, err = strconv.ParseFloat(strings.Join(r.Form["weight"], ""), 64)
+			if err != nil {
+				fmt.Println("weight ", err)
+			}
+
+			db := dbconn()
+			defer db.Close()
+
+			stmt := "UPDATE athlete SET birth=$1, sportclub=$2, name=$3, surname=$4, weight=$5 WHERE id=$6"
+			res, err := db.Exec(stmt, a.Birth, a.SportClub, a.Name, a.Surname, a.Weight, a.Id)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			i, err := res.RowsAffected()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(i)
+
+			t, err := template.ParseFiles("main/templates/success.html")
+			if err != nil {
+				fmt.Println("parsing success template: ", err)
+				return
+			}
+
+			b := successButton{"http://127.0.0.1:8080/update", "Редактировать другого атлета"}
+			err = t.Execute(w, b)
+			if err != nil {
+				fmt.Println("executing addsuccess template: ", err)
+				return
+			}
 		}
 	}
 }

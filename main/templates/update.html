@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Обновить</title>
+    <title>Редактировать</title>
     <link rel="stylesheet" href="mainstyles.css">
 </head>
 <body>
@@ -10,6 +10,9 @@
         <div>
             <form method="post">
                 {{range .Table}}
+                № <br>
+                <input type="text" name="id" readonly value="{{.Id}}">
+                <br>
                 Имя <br>
                 <input type="text" name="name" value="{{.Name}}">
                 <br>
@@ -26,7 +29,7 @@
                 Дата рождения <br>
                 <input type="date" name="birth" value="{{.Caption}}">
                 <br><br>
-                <input type="submit" value="Обновить">
+                <input type="submit" name="upd" value="Сохранить">
             </form>
         </div>
     </div>
