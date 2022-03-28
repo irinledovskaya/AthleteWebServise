@@ -29,7 +29,7 @@ type Attempts struct {
 	sn1, sn2, sn3, cj1, cj2, cj3 int
 }
 
-type successButton struct {
+type button struct {
 	Ref string
 	Cap string
 }

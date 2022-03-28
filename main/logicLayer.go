@@ -165,7 +165,7 @@ func newAthlete(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		b := successButton{"http://127.0.0.1:8080/add", "Добавить ещё атлета"}
+		b := button{"http://127.0.0.1:8080/add", "Добавить ещё атлета"}
 		err = t.Execute(w, b)
 		if err != nil {
 			fmt.Println("executing addsuccess template: ", err)
@@ -274,7 +274,7 @@ func updateAthlete(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			b := successButton{"http://127.0.0.1:8080/update", "Редактировать другого атлета"}
+			b := button{"http://127.0.0.1:8080/update", "Редактировать другого атлета"}
 			err = t.Execute(w, b)
 			if err != nil {
 				fmt.Println("executing addsuccess template: ", err)
